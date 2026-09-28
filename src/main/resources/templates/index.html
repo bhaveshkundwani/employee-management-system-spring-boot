@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+	<meta charset="UTF-8">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Employee Management System</title>
+
+	<!-- Bootstrap 5 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Bootstrap Icons -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+	<!-- Custom CSS -->
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+	<!-- ========================================================= -->
+	<!-- NAVBAR -->
+	<!-- ========================================================= -->
+
+	<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+
+		<div class="container">
+
+			<a class="navbar-brand fw-bold" href="/">
+
+				<i class="bi bi-people-fill me-2"></i>
+
+				Employee Management System
+
+			</a>
+
+		</div>
+
+	</nav>
+
+
+	<!-- ========================================================= -->
+	<!-- MAIN CONTENT -->
+	<!-- ========================================================= -->
+
+	<main class="container py-5">
+
+		<!-- Page Header -->
+
+		<div class="page-header mb-4">
+
+			<div>
+
+				<h1 class="page-title">
+					Employee Management
+				</h1>
+
+				<p class="page-subtitle">
+					Manage employee records from one place.
+				</p>
+
+			</div>
+
+			<div class="header-actions">
+
+				<!-- Add Employee Button -->
+
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+
+					<i class="bi bi-person-plus-fill me-2"></i>
+
+					Add Employee
+
+				</button>
+
+				<!-- Delete All Button -->
+
+				<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAllModal"
+					th:disabled="${#lists.isEmpty(employees)}">
+
+					<i class="bi bi-trash3-fill me-2"></i>
+
+					Delete All
+
+				</button>
+
+			</div>
+
+		</div>
+
+
+		<!-- ===================================================== -->
+		<!-- EMPLOYEE COUNT -->
+		<!-- ===================================================== -->
+
+		<div class="row mb-4">
+
+			<div class="col-md-4">
+
+				<div class="stat-card">
+
+					<div class="stat-icon">
+
+						<i class="bi bi-people-fill"></i>
+
+					</div>
+
+					<div>
+
+						<div class="stat-label">
+							Total Employees
+						</div>
+
+						<div class="stat-value" th:text="${#lists.size(employees)}">
+
+							0
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+
+		<!-- ===================================================== -->
+		<!-- EMPLOYEE TABLE -->
+		<!-- ===================================================== -->
+
+		<div class="card employee-card">
+
+			<div class="card-header employee-card-header">
+
+				<div>
+
+					<h5 class="mb-1">
+						Employee Records
+					</h5>
+
+					<small>
+						View and manage all employee information
+					</small>
+
+				</div>
+
+				<span class="employee-count" th:text="${#lists.size(employees) + ' Employees'}">
+
+					0 Employees
+
+				</span>
+
+			</div>
+
+
+			<div class="card-body p-0">
+
+				<!-- Empty State -->
+
+				<div th:if="${#lists.isEmpty(employees)}" class="empty-state">
+
+					<div class="empty-icon">
+
+						<i class="bi bi-people"></i>
+
+					</div>
+
+					<h4>
+						No Employees Found
+					</h4>
+
+					<p>
+						There are currently no employees in the system.
+					</p>
+
+					<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+						data-bs-target="#addEmployeeModal">
+
+						<i class="bi bi-person-plus-fill me-2"></i>
+
+						Add First Employee
+
+					</button>
+
+				</div>
+
+
+				<!-- Employee Table -->
+
+				<div th:unless="${#lists.isEmpty(employees)}" class="table-responsive">
+
+					<table class="table employee-table mb-0">
+
+						<thead>
+
+							<tr>
+
+								<th>
+									Employee ID
+								</th>
+
+								<th>
+									Name
+								</th>
+
+								<th>
+									Email
+								</th>
+
+								<th>
+									Phone
+								</th>
+
+								<th>
+									Gender
+								</th>
+
+								<th>
+									Salary
+								</th>
+
+								<th>
+									Role
+								</th>
+
+								<th class="text-center">
+									Actions
+								</th>
+
+							</tr>
+
+						</thead>
+
+
+						<tbody>
+
+							<tr th:each="employee : ${employees}">
+
+								<!-- Employee ID -->
+
+								<td>
+
+									<span class="employee-id" th:text="${employee.id}">
+
+										EMP1001
+
+									</span>
+
+								</td>
+
+
+								<!-- Name -->
+
+								<td>
+
+									<div class="employee-name-cell">
+
+										<div class="avatar"
+											th:text="${#strings.substring(employee.employeeName, 0, 1).toUpperCase()}">
+
+											E
+
+										</div>
+
+										<span th:text="${employee.employeeName}">
+
+											Employee Name
+
+										</span>
+
+									</div>
+
+								</td>
+
+
+								<!-- Email -->
+
+								<td>
+
+									<span th:text="${employee.employeeEmail}">
+
+										email@example.com
+
+									</span>
+
+								</td>
+
+
+								<!-- Phone -->
+
+								<td>
+
+									<span th:text="${employee.employeePhone}">
+
+										9876543210
+
+									</span>
+
+								</td>
+
+
+								<!-- Gender -->
+
+								<td>
+
+									<span class="badge gender-badge" th:text="${employee.employeeGender}">
+
+										Male
+
+									</span>
+
+								</td>
+
+
+								<!-- Salary -->
+
+								<td>
+
+									<strong>
+										₹
+										<span th:text="${employee.employeeSalary}">
+											30000
+										</span>
+									</strong>
+
+								</td>
+
+
+								<!-- Role -->
+
+								<td>
+
+									<span class="role-badge" th:text="${employee.employeeRole}">
+
+										Java Developer
+
+									</span>
+
+								</td>
+
+
+								<!-- Actions -->
+
+								<td>
+
+									<div class="action-buttons">
+
+										<!-- Edit -->
+
+										<button type="button" class="btn btn-sm btn-outline-primary"
+											data-bs-toggle="modal"
+											th:data-bs-target="'#editEmployeeModal' + ${employee.id}"
+											title="Edit Employee">
+
+											<i class="bi bi-pencil-square"></i>
+
+										</button>
+
+
+										<!-- Delete -->
+
+										<button type="button" class="btn btn-sm btn-outline-danger"
+											data-bs-toggle="modal"
+											th:data-bs-target="'#deleteEmployeeModal' + ${employee.id}"
+											title="Delete Employee">
+
+											<i class="bi bi-trash3"></i>
+
+										</button>
+
+									</div>
+
+								</td>
+
+							</tr>
+
+						</tbody>
+
+					</table>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</main>
+
+
+	<!-- ========================================================= -->
+	<!-- ADD EMPLOYEE MODAL -->
+	<!-- ========================================================= -->
+
+	<div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-hidden="true">
+
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+
+					<div>
+
+						<h5 class="modal-title">
+							<i class="bi bi-person-plus-fill me-2"></i>
+							Add Employee
+						</h5>
+
+						<small class="modal-subtitle">
+							Enter employee information
+						</small>
+
+					</div>
+
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+
+				</div>
+
+
+				<form th:action="@{/create}" th:object="${employee}" method="post">
+
+					<div class="modal-body">
+
+						<div class="row g-3">
+
+
+							<!-- Name -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Employee Name
+								</label>
+
+								<input type="text" th:field="*{employeeName}" class="form-control"
+									placeholder="Enter employee name" required>
+
+							</div>
+
+
+							<!-- Email -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Email
+								</label>
+
+								<input type="email" th:field="*{employeeEmail}" class="form-control"
+									placeholder="Enter email address" required>
+
+							</div>
+
+
+							<!-- Phone -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Phone Number
+								</label>
+
+								<input type="tel" th:field="*{employeePhone}" class="form-control"
+									placeholder="Enter phone number" minlength="10" maxlength="10" required>
+
+							</div>
+
+
+							<!-- Gender -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Gender
+								</label>
+
+								<select th:field="*{employeeGender}" class="form-select" required>
+
+									<option value="">
+										Select gender
+									</option>
+
+									<option value="Male">
+										Male
+									</option>
+
+									<option value="Female">
+										Female
+									</option>
+
+									<option value="Other">
+										Other
+									</option>
+
+								</select>
+
+							</div>
+
+
+							<!-- Salary -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Salary
+								</label>
+
+								<input type="number" th:field="*{employeeSalary}" class="form-control"
+									placeholder="Enter salary" min="0" required>
+
+							</div>
+
+
+							<!-- Role -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Employee Role
+								</label>
+
+								<select th:field="*{employeeRole}" class="form-select" required>
+
+									<option value="">
+										Select role
+									</option>
+
+									<option value="Java Developer">
+										Java Developer
+									</option>
+
+									<option value="Python Developer">
+										Python Developer
+									</option>
+
+									<option value="Web Developer">
+										Web Developer
+									</option>
+
+									<option value="Android Developer">
+										Android Developer
+									</option>
+
+									<option value="UI Developer">
+										UI Developer
+									</option>
+
+									<option value="Database Administrator">
+										Database Administrator
+									</option>
+
+								</select>
+
+							</div>
+
+						</div>
+
+					</div>
+
+
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+
+							Cancel
+
+						</button>
+
+						<button type="submit" class="btn btn-primary">
+
+							<i class="bi bi-check-lg me-2"></i>
+
+							Add Employee
+
+						</button>
+
+					</div>
+
+				</form>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<!-- ========================================================= -->
+	<!-- EDIT EMPLOYEE MODALS -->
+	<!-- ========================================================= -->
+
+	<div th:each="employee : ${employees}" class="modal fade" th:id="'editEmployeeModal' + ${employee.id}" tabindex="-1"
+		aria-hidden="true">
+
+		<div class="modal-dialog modal-lg modal-dialog-centered">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+
+					<div>
+
+						<h5 class="modal-title">
+
+							<i class="bi bi-pencil-square me-2"></i>
+
+							Edit Employee
+
+						</h5>
+
+						<small class="modal-subtitle">
+
+							Employee ID:
+							<strong th:text="${employee.id}">
+								EMP1001
+							</strong>
+
+						</small>
+
+					</div>
+
+					<button type="button" class="btn-close" data-bs-dismiss="modal">
+					</button>
+
+				</div>
+
+
+				<form th:action="@{/update}" method="post">
+
+					<div class="modal-body">
+
+						<!-- Hidden Employee ID -->
+
+						<input type="hidden" name="id" th:value="${employee.id}">
+
+
+						<div class="row g-3">
+
+
+							<!-- Name -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Employee Name
+								</label>
+
+								<input type="text" name="employeeName" th:value="${employee.employeeName}"
+									class="form-control" required>
+
+							</div>
+
+
+							<!-- Email -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Email
+								</label>
+
+								<input type="email" name="employeeEmail" th:value="${employee.employeeEmail}"
+									class="form-control" required>
+
+							</div>
+
+
+							<!-- Phone -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Phone Number
+								</label>
+
+								<input type="tel" name="employeePhone" th:value="${employee.employeePhone}"
+									class="form-control" minlength="10" maxlength="10" required>
+
+							</div>
+
+
+							<!-- Gender -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Gender
+								</label>
+
+								<select name="employeeGender" class="form-select" required>
+
+									<option value="Male" th:selected="${employee.employeeGender == 'Male'}">
+										Male
+									</option>
+
+									<option value="Female" th:selected="${employee.employeeGender == 'Female'}">
+										Female
+									</option>
+
+									<option value="Other" th:selected="${employee.employeeGender == 'Other'}">
+										Other
+									</option>
+
+								</select>
+
+							</div>
+
+
+							<!-- Salary -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Salary
+								</label>
+
+								<input type="number" name="employeeSalary" th:value="${employee.employeeSalary}"
+									class="form-control" min="0" required>
+
+							</div>
+
+
+							<!-- Role -->
+
+							<div class="col-md-6">
+
+								<label class="form-label">
+									Employee Role
+								</label>
+
+								<select name="employeeRole" class="form-select" required>
+
+									<option value="Java Developer"
+										th:selected="${employee.employeeRole == 'Java Developer'}">
+										Java Developer
+									</option>
+
+									<option value="Python Developer"
+										th:selected="${employee.employeeRole == 'Python Developer'}">
+										Python Developer
+									</option>
+
+									<option value="Web Developer"
+										th:selected="${employee.employeeRole == 'Web Developer'}">
+										Web Developer
+									</option>
+
+									<option value="Android Developer"
+										th:selected="${employee.employeeRole == 'Android Developer'}">
+										Android Developer
+									</option>
+
+									<option value="UI Developer"
+										th:selected="${employee.employeeRole == 'UI Developer'}">
+										UI Developer
+									</option>
+
+									<option value="Database Administrator"
+										th:selected="${employee.employeeRole == 'Database Administrator'}">
+										Database Administrator
+									</option>
+
+								</select>
+
+							</div>
+
+						</div>
+
+					</div>
+
+
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+
+							Cancel
+
+						</button>
+
+						<button type="submit" class="btn btn-primary">
+
+							<i class="bi bi-save me-2"></i>
+
+							Save Changes
+
+						</button>
+
+					</div>
+
+				</form>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<!-- ========================================================= -->
+	<!-- DELETE EMPLOYEE MODALS -->
+	<!-- ========================================================= -->
+
+	<div th:each="employee : ${employees}" class="modal fade" th:id="'deleteEmployeeModal' + ${employee.id}"
+		tabindex="-1" aria-hidden="true">
+
+		<div class="modal-dialog modal-dialog-centered">
+
+			<div class="modal-content">
+
+				<div class="modal-body text-center p-5">
+
+					<div class="delete-icon mb-4">
+
+						<i class="bi bi-trash3-fill"></i>
+
+					</div>
+
+					<h4 class="mb-3">
+						Delete Employee?
+					</h4>
+
+					<p class="text-muted mb-4">
+
+						Are you sure you want to delete
+
+						<strong th:text="${employee.employeeName}">
+							Employee
+						</strong>
+
+						?
+
+						<br>
+
+						This action cannot be undone.
+
+					</p>
+
+
+					<form th:action="@{/remove}" method="post">
+
+						<input type="hidden" name="id" th:value="${employee.id}">
+
+
+						<div class="d-flex justify-content-center gap-2">
+
+							<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+
+								Cancel
+
+							</button>
+
+							<button type="submit" class="btn btn-danger">
+
+								<i class="bi bi-trash3 me-2"></i>
+
+								Delete Employee
+
+							</button>
+
+						</div>
+
+					</form>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<!-- ========================================================= -->
+	<!-- DELETE ALL MODAL -->
+	<!-- ========================================================= -->
+
+	<div class="modal fade" id="deleteAllModal" tabindex="-1" aria-hidden="true">
+
+		<div class="modal-dialog modal-dialog-centered">
+
+			<div class="modal-content">
+
+				<div class="modal-body text-center p-5">
+
+					<div class="delete-all-icon mb-4">
+
+						<i class="bi bi-exclamation-triangle-fill"></i>
+
+					</div>
+
+					<h4 class="mb-3">
+						Delete All Employees?
+					</h4>
+
+					<p class="text-muted">
+
+						This will permanently delete all employee
+						records from the database.
+
+					</p>
+
+					<p class="fw-semibold">
+						Type <span class="text-danger">Yes</span>
+						to confirm.
+					</p>
+
+
+					<form th:action="@{/remove/all}" th:object="${confirmationForm}" method="post">
+
+						<input type="text" th:field="*{confirmation}" class="form-control text-center mb-4"
+							placeholder="Type Yes" autocomplete="off" required>
+
+
+						<div class="d-flex justify-content-center gap-2">
+
+							<button type="button" class="btn btn-light" data-bs-dismiss="modal">
+
+								Cancel
+
+							</button>
+
+							<button type="submit" class="btn btn-danger">
+
+								<i class="bi bi-trash3-fill me-2"></i>
+
+								Delete All
+
+							</button>
+
+						</div>
+
+					</form>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<!-- ========================================================= -->
+	<!-- FOOTER -->
+	<!-- ========================================================= -->
+
+	<footer class="footer">
+
+		<div class="container text-center">
+
+			<p class="mb-0">
+
+				Employee Management System
+
+				<span class="footer-separator">
+					•
+				</span>
+
+				Spring Boot + PostgreSQL + Thymeleaf
+
+			</p>
+
+		</div>
+
+	</footer>
+
+
+	<!-- Bootstrap JS -->
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+	</script>
+
+</body>
+
+</html>
